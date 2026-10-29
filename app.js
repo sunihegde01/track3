@@ -1163,7 +1163,7 @@
         body: { email, password }
       });
       if (!result.access_token) {
-        $("#authError").textContent = "Check your email to confirm the account, then return here to sign in.";
+        $("#authError").textContent = "No sign-in session was returned. Check your inbox and spam for the Supabase confirmation email. If it is missing, configure SMTP in Supabase Authentication settings and check the project's Auth logs; this app does not send email.";
         return;
       }
       cloud.token = result.access_token;

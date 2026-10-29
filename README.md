@@ -81,10 +81,10 @@ Copy `.env.example` to `.env`. The placeholders do not enable cloud storage. Wit
 
 ### Optional Supabase setup
 
-1. Create a Supabase project and enable email/password sign-in under **Authentication → Providers**. Configure email confirmation and password policy in the project dashboard.
+1. Create a Supabase project and enable email/password sign-in under **Authentication → Providers**. Configure email confirmation and password policy in the project dashboard. For reliable confirmation email delivery, configure a custom SMTP provider under **Authentication → SMTP Settings** and verify its sender address. Supabase's default email service is rate-limited and intended for testing; this app does not send email itself, and SMTP credentials belong only in the Supabase dashboard, not `.env`.
 2. In the Supabase SQL editor, run [`supabase/schema.sql`](./supabase/schema.sql). It creates the profile, activity, calculation snapshot, target, recommendation, completion, and progress-history tables, constraints, triggers, and RLS policies.
 3. Copy the project URL and its public **anon/publishable** key into `SUPABASE_URL` and `SUPABASE_ANON_KEY` in `.env`, then restart Flask. The anon key is not a service-role key. The server verifies each bearer token with Supabase Auth and uses that user's token for PostgREST, so RLS remains active. **Never configure or expose the Supabase service-role key.**
-4. Open the app via Flask, choose **Connect account**, create/sign in, and use **Sync this browser**. Sync uploads the local daily records and profile before refreshing the browser's list with the user's cloud records. If email confirmation is on, confirm the account before signing in.
+4. Under **Authentication → URL Configuration**, set the Site URL to the app's deployed address and allow the local address when testing. Open the app via Flask, choose **Connect account**, and create an account. If the confirmation email does not arrive, check spam, Supabase Auth logs, and your SMTP provider's delivery/bounce logs. Confirm the account before signing in and using **Sync this browser**; sync uploads the local daily records and profile before refreshing the browser's list with the user's cloud records.
 
 Cloud mode is optional. Supabase policy/schema changes and actual hosted auth require your own project credentials and cannot be verified from this repository alone.
 

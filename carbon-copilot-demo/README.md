@@ -108,6 +108,17 @@ Copy `.env.example` to `.env`. The placeholders do not enable cloud storage. Wit
 
 Cloud mode is optional. Supabase policy/schema changes and actual hosted auth require your own project credentials and cannot be verified from this repository alone.
 
+### Deploy this demo to Vercel
+
+1. Push this repository to GitHub and import it in Vercel.
+2. Set **Root Directory** to `carbon-copilot-demo` so Vercel builds the demo, not the main app.
+3. Keep the detected Python framework preset and default build settings. Vercel uses `app.py` as the Flask entrypoint; the build hook copies the frontend into `public/` for CDN delivery.
+4. In the Vercel project's **Settings → Environment Variables**, add `SUPABASE_URL` and `SUPABASE_ANON_KEY` for the environments you intend to deploy. Use the Supabase project's URL and public anon/publishable key. Never add a service-role key.
+5. Add `FLASK_SECRET_KEY` with a unique random value (for example, generate one with `python -c "import secrets; print(secrets.token_urlsafe(32))"`). Do not use the development fallback in production. Add `ANTHROPIC_API_KEY` only if you intend to enable the optional AI advisor.
+6. Apply `supabase/schema.sql` to the Supabase project, deploy, then check `/api/health` for `cloudEnabled: true`.
+
+The local `.env` file is ignored by Git and is not deployed; configure each variable in Vercel instead. Redeploy after changing environment variables. User activity saved only in browser storage remains local until the user signs in and syncs it to Supabase.
+
 ### Optional AI setup
 
 Set `ANTHROPIC_API_KEY` in `.env` and optionally choose `ANTHROPIC_MODEL`. The key stays on the backend. The LLM receives the question, recent **calculated category summaries**, and the deterministic recommendation snapshots—not account email or raw personal profile. It is instructed to explain those fixed results, never calculate or replace factors or savings. If the provider is unavailable or rate-limited, the REST API returns a deterministic rule-based answer and a fallback notice. Do not send information that should not be processed by your configured provider.
